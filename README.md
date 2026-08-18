@@ -10,6 +10,16 @@ npm test
 npm run build
 ```
 
+## First evening
+
+This repository is a template. Click **Use this template** (or fork it) to create your package repository; do not clone this repository to publish the template itself.
+
+Before the first publish, rename the package and repository placeholders in `package.json`, update `.changeset/config.json`, and replace the placeholder `LICENSE` attribution. Then verify the setup:
+
+```bash
+npm ci && npm test && npm run build
+```
+
 ## Customize
 
 Update:
