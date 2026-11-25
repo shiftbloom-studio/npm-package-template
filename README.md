@@ -55,13 +55,17 @@ still somewhere in your package.
 
 **Publishing**
 
-- [ ] Add a repository secret named **`NPM_TOKEN`** (or **`NODE_AUTH_TOKEN`** —
-      the Release workflow accepts either) containing an npm **Automation**
-      token. Without it the release job fails deliberately, with
-      `Missing npm token...`
+- [ ] Publish the very first version by hand (`npm publish --access public`
+      after `npm login`), because npm only lets you add a trusted publisher
+      to a package that already exists
+- [ ] On npmjs.com, open the package → **Settings** → **Trusted publishing**,
+      choose **GitHub Actions** and enter your organization, repository and
+      the workflow file name `release.yml` (leave the environment empty).
+      After that, the Release workflow publishes through OIDC with
+      provenance, and no npm token is needed in the repository
 - [ ] `package.json` — `publishConfig.access` is `public`; set it to
       `restricted` for a private scoped package
-- [ ] Check `engines.node` (`>=18`) still matches what you intend to support
+- [ ] Check `engines.node` (`>=24`) still matches what you intend to support
 
 Then run `npm run lint`, `npm run typecheck`, `npm test` and `npm run build`
 once before your first release.
@@ -70,5 +74,5 @@ once before your first release.
 ## Release (Changesets)
 
 - Add a changeset: `npm run changeset`
-- On push to `main`, the Release workflow will create a version PR or publish after merge (requires repo secret `NPM_TOKEN` or `NODE_AUTH_TOKEN`).
+- On push to `main`, the Release workflow creates or updates a "version packages" PR. Merging it publishes to npm through trusted publishing, with provenance.
 
