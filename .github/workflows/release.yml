@@ -48,7 +48,21 @@ jobs:
       - name: Build
         run: npm run build
 
+      # The template itself ships a placeholder package name that can't be
+      # published. Skip the release step until the package is renamed.
+      - name: Check for template placeholder
+        id: package
+        run: |
+          name="$(node -p "require('./package.json').name")"
+          if [ "$name" = "@your-scope/your-package" ]; then
+            echo "placeholder=true" >> "$GITHUB_OUTPUT"
+            echo "::notice::Package name is still the template placeholder, skipping release."
+          else
+            echo "placeholder=false" >> "$GITHUB_OUTPUT"
+          fi
+
       - name: Create Release Pull Request or Publish
+        if: steps.package.outputs.placeholder != 'true'
         uses: changesets/action@v1
         with:
           version: npm run version
